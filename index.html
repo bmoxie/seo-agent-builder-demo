@@ -3,71 +3,86 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Interactive example: compose SEO research, audit, content, and reporting agents into a pipeline."
-    />
-    <title>SEO Team Agent Builder — Example</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
+    <title>Web Marketing Agent Diagrams</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --text: #0f172a;
+        --muted: #475569;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --brand: #0ea5e9;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 48px auto;
+        padding: 0 20px;
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-size: 36px;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 17px;
+      }
+      .grid {
+        display: grid;
+        gap: 14px;
+        margin-top: 28px;
+      }
+      .card {
+        display: block;
+        text-decoration: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px;
+      }
+      .card:hover {
+        border-color: var(--brand);
+      }
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 21px;
+        color: var(--text);
+      }
+      .card p {
+        font-size: 15px;
+        line-height: 1.5;
+      }
+    </style>
   </head>
   <body>
-    <div class="bg-grid" aria-hidden="true"></div>
-    <header class="site-header">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-text">SEO Agent Builder</span>
-        <span class="badge">Example</span>
-      </div>
-      <p class="tagline">
-        Drag capabilities into your pipeline and preview how an SEO team agent
-        stack could run end-to-end.
+    <main class="wrap">
+      <h1>Web Marketing Agent Project</h1>
+      <p>
+        Browse the three diagrams below: system architecture, master flow, and
+        workflows. Each page is self-contained and can be hosted as a static site.
       </p>
-    </header>
-
-    <main class="layout">
-      <section class="panel palette" aria-labelledby="palette-title">
-        <h2 id="palette-title">Agent modules</h2>
-        <p class="hint">Click a module to add it to the pipeline (order matters).</p>
-        <ul class="module-list" id="module-palette"></ul>
-        <button type="button" class="btn ghost" id="btn-clear">Clear pipeline</button>
-      </section>
-
-      <section class="panel canvas-wrap" aria-labelledby="canvas-title">
-        <h2 id="canvas-title">Your pipeline</h2>
-        <div
-          class="pipeline"
-          id="pipeline"
-          role="list"
-          aria-label="Active agent pipeline"
-        ></div>
-        <p class="empty-state" id="empty-state">
-          Add modules from the left to see the flow visualization.
-        </p>
-      </section>
-
-      <section class="panel output" aria-labelledby="output-title">
-        <h2 id="output-title">Live preview</h2>
-        <div class="viz" id="viz">
-          <div class="viz-nodes" id="viz-nodes"></div>
-          <svg class="viz-edges" id="viz-edges" aria-hidden="true"></svg>
-        </div>
-        <dl class="summary" id="summary"></dl>
+      <section class="grid" aria-label="Project diagrams">
+        <a class="card" href="li-master-flow-diagram.html">
+          <h2>Web Marketing Master Flow</h2>
+          <p>System workflow diagram plus the Sense→Learn operating cycle; not a second architecture stack.</p>
+        </a>
+        <a class="card" href="marketing-agent-architecture.html">
+          <h2>Web Marketing Agent Architecture</h2>
+          <p>Layered view of people, agents, brain, MCPs, data, and runtime.</p>
+        </a>
+        <a class="card" href="li-marketing-agent-workflows.html">
+          <h2>Web Marketing Agent Workflows</h2>
+          <p>Agent mapping on each segment of the loop, plus five end-to-end workflow examples.</p>
+        </a>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <p>
-        Static demo for stakeholder review — connect to your orchestration layer
-        or LLM tools in production.
-      </p>
-    </footer>
-
-    <script src="app.js" defer></script>
   </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "name": "seo-agent-builder-demo",
+  "private": true,
+  "scripts": {
+    "vercel": "vercel",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vercel": "^50.0.0"
+  }
+}

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Web Marketing Agent Architecture — Master Diagram</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fa; margin: 0; padding: 32px; color: #1a1a2e; }
+  .top-nav { max-width: 1400px; margin: 0 auto 18px; background: white; border-radius: 12px; padding: 10px 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; flex-wrap: wrap; gap: 10px; }
+  .top-nav a { text-decoration: none; color: #0a2540; font-size: 14px; padding: 7px 12px; border: 1px solid #dbe3ef; border-radius: 8px; background: #f8fafc; }
+  .top-nav a:hover { border-color: #0ea5e9; color: #0369a1; }
+  h1 { text-align: center; margin-bottom: 4px; font-size: 30px; color: #0a2540; }
+  .subtitle { text-align: center; color: #4a5568; margin-bottom: 32px; font-size: 16px; line-height: 1.55; max-width: 900px; margin-left: auto; margin-right: auto; }
+  .diagram { max-width: 1400px; margin: 0 auto; }
+  .layer { background: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 6px solid #ccc; }
+  .layer h2 { margin: 0 0 4px 0; font-size: 19px; color: #0a2540; }
+  .layer .tagline { font-size: 14px; color: #64748b; margin-bottom: 14px; font-style: italic; line-height: 1.45; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .box { background: #f7f9fc; border: 1px solid #d0d7e2; border-radius: 8px; padding: 12px 14px; font-size: 14px; flex: 1 1 180px; min-width: 160px; }
+  .box strong { display: block; color: #0a2540; font-size: 14px; margin-bottom: 2px; }
+  .box span { font-size: 13px; color: #5a6478; line-height: 1.4; }
+  .layer-agents .box { font-size: 15px; min-width: 200px; }
+  .layer-agents .box strong { font-size: 16px; margin-bottom: 6px; }
+  .agent-list { display: flex; flex-direction: column; gap: 9px; margin-top: 8px; font-size: 14px; line-height: 1.4; color: #1e293b; }
+  .agent-item { display: flex; align-items: flex-start; gap: 10px; }
+  .agents-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-items: start; }
+  @media (max-width: 1200px) { .agents-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .prio-dot { width: 12px; height: 12px; min-width: 12px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); }
+  .prio-dot.p1 { background: #16a34a; }
+  .prio-dot.p2 { background: #ea580c; }
+  .prio-dot.p3 { background: #eab308; }
+  .prio-dot.p4 { background: #dc2626; }
+  .prio-dot.other { background: #94a3b8; }
+
+  .layer-people  { border-left-color: #6366f1; }
+  .layer-front   { border-left-color: #0ea5e9; }
+  .layer-agents  { border-left-color: #f59e0b; }
+  .layer-brain   { border-left-color: #ec4899; }
+  .layer-mcp     { border-left-color: #10b981; }
+  .layer-data    { border-left-color: #8b5cf6; }
+  .layer-sources { border-left-color: #ef4444; }
+  .layer-runtime { border-left-color: #475569; }
+
+  .layer-people  .box { background: #eef0ff; border-color: #c7cbf5; }
+  .layer-front   .box { background: #e0f2fe; border-color: #bae0fb; }
+  .layer-agents  .box { background: #fef3c7; border-color: #fcd9a3; }
+  .layer-brain   .box { background: #fce7f3; border-color: #f9c2dd; }
+  .layer-mcp     .box { background: #d1fae5; border-color: #a7e7c5; }
+  .layer-data    .box { background: #ede9fe; border-color: #cdc1f7; }
+  .layer-sources .box { background: #fee2e2; border-color: #fbb4b4; }
+  .layer-runtime .box { background: #e2e8f0; border-color: #b9c2d0; color: #1e293b; }
+
+  .arrow { text-align: center; font-size: 22px; color: #94a3b8; margin: -6px 0; }
+  .legend { max-width: 1400px; margin: 32px auto 0; background: white; border-radius: 12px; padding: 22px 26px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-size: 15px; color: #334155; }
+  .legend h3 { margin-top: 0; color: #0a2540; font-size: 17px; }
+  .legend p { margin: 10px 0; line-height: 1.6; font-size: 15px; }
+  .footer { text-align: center; color: #94a3b8; font-size: 13px; margin-top: 24px; }
+  .loop-callout { max-width: 1400px; margin: 0 auto 24px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 18px 22px; font-size: 15px; color: #0c4a6e; line-height: 1.6; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .loop-callout h3 { margin: 0 0 10px; font-size: 17px; color: #0369a1; }
+  .loop-callout a { color: #0369a1; font-weight: 600; }
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Project navigation">
+  <a href="index.html">Home</a>
+  <a href="li-master-flow-diagram.html">Master Flow</a>
+  <a href="marketing-agent-architecture.html">Architecture</a>
+  <a href="li-marketing-agent-workflows.html">Workflows</a>
+</nav>
+
+<h1>Web Marketing Agent Architecture — Master View</h1>
+<p class="subtitle">A non-technical map of how the discovery operating system fits together. Read top to bottom: people at the top, data sources at the bottom, agents in the middle. Colored dots show P1–P4 (brainstorm); other items use a slate dot.</p>
+
+<div class="diagram">
+
+  <!-- LAYER 1: PEOPLE -->
+  <div class="layer layer-people">
+    <h2>1. The People</h2>
+    <div class="tagline">The humans the system serves and supervises</div>
+    <div class="row">
+      <div class="box"><strong>SEO / AEO Team</strong><span>Supervises standards, exceptions, and strategy</span></div>
+      <div class="box"><strong>LOB Leads</strong><span>Own BU web properties, conversions, revenue</span></div>
+      <div class="box"><strong>BU Stakeholders</strong><span>Receive readouts and approvals</span></div>
+      <div class="box"><strong>Content Agency</strong><span>Receives briefs, returns drafts</span></div>
+      <div class="box"><strong>Executives</strong><span>Read narratives, set direction</span></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 2: FRONT DOORS -->
+  <div class="layer layer-front">
+    <h2>2. Front Doors (How People Interact)</h2>
+    <div class="tagline">The everyday Microsoft tools the team already lives in</div>
+    <div class="row">
+      <div class="box"><strong>Microsoft Teams</strong><span>Chat with agents, get alerts</span></div>
+      <div class="box"><strong>Outlook</strong><span>Email drafts, approvals, digests</span></div>
+      <div class="box"><strong>SharePoint / OneDrive</strong><span>Browse briefs, reports, decks</span></div>
+      <div class="box"><strong>Airtable</strong><span>Backlogs, calendars, decisions</span></div>
+      <div class="box"><strong>AEM</strong><span>Where approved content ships</span></div>
+      <div class="box"><strong>Tableau</strong><span>Dashboards on top of the data lake</span></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 3: AGENTS -->
+  <div class="layer layer-agents">
+    <h2>3. The Agents (Claude Code + Skills)</h2>
+    <div class="tagline">Each agent is a small specialist that produces artifacts and routes work — grouped into eight buckets (same mapping as the Master Flow).</div>
+    <div class="row agents-grid">
+      <div class="box"><strong>1. External Intel</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot p4" title="P4"></span><span>Prompt Opportunity Agent</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Field News &amp; Macro Impact</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>AEO Defense, Competitive Watch &amp; Profound Anomalies</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>SERP, AI Overview &amp; Rich-Result Tracking</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Persona, ICP &amp; VoC Alignment</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Prompt Family Health: Answers, Drift &amp; Variance</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Brand/Citation Gap &amp; Competitor Sources</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Prompt Volume, Trend &amp; Sentiment</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Query Migration &amp; Search Intent Shift</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Striking Distance, Losses &amp; New Rank Opportunities</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Algorithm Impact, Authority &amp; Branded Split</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Backlink Velocity &amp; Quality</span></div>
+        <div class="agent-item"><span class="prio-dot p3" title="P3"></span><span>Content Gap &amp; FAQ Cannibalization</span></div>
+      </div></div>
+      <div class="box"><strong>2. Owned Surface Monitoring</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Owned Surface Change Detector</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>New Page Detector</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Page Removal &amp; Decay Detector</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Cross-Property Coverage Monitor</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Template-Level Change Detector</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Internal Publishing Activity Stream</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Content Freshness Heatmap</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>GSC Coverage &amp; Indexation Agent</span></div>
+      </div></div>
+      <div class="box"><strong>3. Content Operations</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot p2" title="P2"></span><span>SEO Content Engine</span></div>
+        <div class="agent-item"><span class="prio-dot p2" title="P2"></span><span>Product Expert Gut Check</span></div>
+        <div class="agent-item"><span class="prio-dot p3" title="P3"></span><span>Cross-Ecosystem Alignment</span></div>
+        <div class="agent-item"><span class="prio-dot p3" title="P3"></span><span>Editorial Calendar Synth</span></div>
+        <div class="agent-item"><span class="prio-dot p2" title="P2"></span><span>Localization Engine</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Agency Brief + QA</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>LOB Lead Review Packet</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Repurposing Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Owned Surface Refresh</span></div>
+      </div></div>
+      <div class="box"><strong>4. Technical SEO</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Technical SEO Engine</span></div>
+        <div class="agent-item"><span class="prio-dot p2" title="P2"></span><span>Schema Generation + Validation</span></div>
+        <div class="agent-item"><span class="prio-dot p3" title="P3"></span><span>On-Page + Decay Agent</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Health Agent (Ahrefs → AEM)</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Backlink Audit / Disavow</span></div>
+        <div class="agent-item"><span class="prio-dot p4" title="P4"></span><span>Internal Linking Auto</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Launch Readiness</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Migration QA</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>404 / Redirect Janitor</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Tech SEO Health Monitor</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Insight-Proof at Scale</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Image &amp; Alt-Text Audit</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Content Inventory &amp; Decay</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Conversion Path &amp; Funnel Audit</span></div>
+      </div></div>
+      <div class="box"><strong>5. Earned Media (AEO + Agency Takeover)</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Earned Signal Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Earned Whitespace Mapper</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Citation-Worthy Asset Generator</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Third-Party Co-Mention Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Analyst Visibility Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Coverage &amp; Citation Monitor</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Publisher Briefs</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Journalist &amp; Analyst Relationship Tracker</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Backlink Outreach Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Earned Co-Creation Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Awards &amp; Speaking Opportunity Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Agency Takeover Workflow Agent</span></div>
+      </div></div>
+      <div class="box"><strong>6. Internal Partner AEO Support / Guidance</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>AEO Guidance for Social</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Thought Leadership Engine</span></div>
+        <div class="agent-item"><span class="prio-dot p3" title="P3"></span><span>Newsletter Builder</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Airtable Handoff Packets</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Exec Thought Leadership Inputs</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Community Listening Inputs</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Webinar / Event Promotion</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>SME Prompt Pack Generator</span></div>
+      </div></div>
+      <div class="box"><strong>7. Measurement &amp; Readouts</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Auto Reporting + Narrative</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>FAQ Reporting Tool</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Analytics Visualization</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Recurring Q&amp;A Agent</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>PPT / GSlides Builder</span></div>
+        <div class="agent-item"><span class="prio-dot p4" title="P4"></span><span>ROI by Initiative</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>BU Stakeholder Readout</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Experiment Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Revenue Attribution &amp; Influence</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Paid / Organic Sync</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Tool ROI / Vendor Audit</span></div>
+      </div></div>
+      <div class="box"><strong>8. Internal Ops + Planning</strong><div class="agent-list">
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>Multi-Source Pulls</span></div>
+        <div class="agent-item"><span class="prio-dot p1" title="P1"></span><span>MLT Update Builder</span></div>
+        <div class="agent-item"><span class="prio-dot p3" title="P3"></span><span>Roadmap Builder</span></div>
+        <div class="agent-item"><span class="prio-dot p4" title="P4"></span><span>Doc Retrieval Agent</span></div>
+        <div class="agent-item"><span class="prio-dot p4" title="P4"></span><span>Song Sheet Optimizer</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Workflow Auditor</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Decision Memory</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Meeting Prep &amp; Recap</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Status Roll-Up</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Onboarding &amp; SOP Agent</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Capacity &amp; Throughput Tracker</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Brand &amp; Legal Compliance Sweep</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Marketing Brain</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Governance Gate</span></div>
+        <div class="agent-item"><span class="prio-dot other" title="Other"></span><span>Ownership Registry</span></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 4: BRAIN + GOVERNANCE -->
+  <div class="layer layer-brain">
+    <h2>4. The Marketing Brain & Governance Layer</h2>
+    <div class="tagline">Shared memory, judgment, and guardrails every agent calls before acting</div>
+    <div class="row">
+      <div class="box"><strong>Marketing Brain</strong><span>Brand voice, ICPs, positioning, approved claims, decision history, VoC, SOPs</span></div>
+      <div class="box"><strong>Governance Gate</strong><span>Decides what Claude can recommend, draft, route, or execute</span></div>
+      <div class="box"><strong>Ownership Registry</strong><span>Who owns each URL, prompt, BU, topic</span></div>
+      <div class="box"><strong>Skills Library</strong><span>Reusable judgment patterns: scoring, briefing, QA, narrating</span></div>
+      <div class="box"><strong>Artifact Templates</strong><span>Briefs, packets, readouts, checklists, decks</span></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 5: MCPs -->
+  <div class="layer layer-mcp">
+    <h2>5. MCPs — How Claude Talks to Tools</h2>
+    <div class="tagline">A small number of custom + off-the-shelf connectors</div>
+    <div class="row">
+      <div class="box"><strong>Custom MCPs</strong><span>Unified Data Lake · Marketing Brain · Governance Gate · Ownership Registry · AEM · Profound</span></div>
+      <div class="box"><strong>Microsoft MCPs</strong><span>Outlook · Teams · SharePoint · OneDrive</span></div>
+      <div class="box"><strong>Workspace MCPs</strong><span>Airtable · Jira · Confluence/Notion · Cursor</span></div>
+      <div class="box"><strong>Knowledge Sources</strong><span>Artemis & Fox (CRM) · Zendesk · LinkedIn · Reddit · Meltwater</span></div>
+      <div class="box"><strong>Browser Fallback</strong><span>Claude in Chrome — for tools without an API</span></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 6: DATA LAYER -->
+  <div class="layer layer-data">
+    <h2>6. The Data Layer (Single Source of Truth)</h2>
+    <div class="tagline">Everything normalized into one warehouse so every agent reads from one place</div>
+    <div class="row">
+      <div class="box"><strong>BigQuery</strong><span>Unified data lake — all signals, metrics, decisions</span></div>
+      <div class="box"><strong>Azure AI Search</strong><span>Vector store powering the Marketing Brain</span></div>
+      <div class="box"><strong>Azure Blob Storage</strong><span>Artifacts, raw exports, document caches</span></div>
+      <div class="box"><strong>Decision Log</strong><span>Append-only history of every governed action</span></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 7: SOURCES -->
+  <div class="layer layer-sources">
+    <h2>7. External Data Sources (API-Only ETL)</h2>
+    <div class="tagline">Pulled nightly into the data lake by scheduled jobs — no MCP needed</div>
+    <div class="row">
+      <div class="box"><strong>Profound</strong><span>AEO visibility, citations, prompts</span></div>
+      <div class="box"><strong>Adobe Analytics + Launch + LLM Optimizer</strong><span>Behavior, tagging, optimization</span></div>
+      <div class="box"><strong>Google Search Console</strong><span>Queries, coverage, CTR</span></div>
+      <div class="box"><strong>Ahrefs + SEMrush</strong><span>SEO, backlinks, competitive intel</span></div>
+      <div class="box"><strong>SerpAPI / DataForSEO</strong><span>SERP features, AI Overviews</span></div>
+      <div class="box"><strong>PageSpeed / CrUX</strong><span>Core Web Vitals</span></div>
+      <div class="box"><strong>Jarvis Schema</strong><span>Internal structured data tooling</span></div>
+      <div class="box"><strong>Screaming Frog / Sitebulb</strong><span>Crawl exports</span></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- LAYER 8: RUNTIME -->
+  <div class="layer layer-runtime">
+    <h2>8. Where It All Runs (Microsoft Azure Backend)</h2>
+    <div class="tagline">Always-on cloud infrastructure, governed by your existing IT and identity</div>
+    <div class="row">
+      <div class="box"><strong>Azure Container Apps</strong><span>Hosts the custom MCP servers 24/7</span></div>
+      <div class="box"><strong>Azure Functions</strong><span>Runs scheduled ETL jobs nightly</span></div>
+      <div class="box"><strong>Azure Key Vault</strong><span>Secure storage for API keys & secrets</span></div>
+      <div class="box"><strong>Entra ID (Azure AD)</strong><span>Single sign-on, permissions, governance</span></div>
+      <div class="box"><strong>Azure DevOps / GitHub</strong><span>Code repository + CI/CD pipelines</span></div>
+      <div class="box"><strong>Cursor / VS Code</strong><span>Where developers author skills, agents, MCPs</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="loop-callout">
+  <h3>Six-stage operating loop</h3>
+  <p>Individual agents also map to an end-to-end loop: <strong>Sense → Decide → Produce → Orchestrate → Verify → Learn</strong>. Three substrates sit under every stage: <strong>Marketing Brain</strong> (shared memory), <strong>Governance Gate</strong> (policy on recommend / draft / route / execute), and <strong>Ownership Registry</strong> (who owns what). The <a href="li-marketing-agent-workflows.html">Workflows</a> page lists which named agents roll up into each stage and how the end-to-end examples plug into that loop.</p>
+</div>
+
+<div class="legend">
+  <h3>How to read this diagram</h3>
+  <p><strong>Top down = how a request flows.</strong> A team member asks something in Teams or Outlook (Layer 2). That triggers an agent (Layer 3). The agent consults the Marketing Brain and Governance Gate (Layer 4) to stay on-message and within policy. It calls the right tools through MCPs (Layer 5), reads from the unified data lake (Layer 6), which is fed nightly by external APIs (Layer 7). All of it runs on Azure infrastructure that the developers maintain in Cursor and Git (Layer 8).</p>
+  <p><strong>Priority dots</strong> (next to each agent): green=P1 · orange=P2 · yellow=P3 · red=P4 · slate=other. In bucket 1, combined lines inherit the strongest brainstorm match: e.g. Field News &amp; Macro Impact uses the P1 dot (Field News TLDR was P1; Macro was P2); Content Gap &amp; FAQ Cannibalization uses P3 (FAQ + Cannibalization was P3; Content Gap Analysis was P4).</p>
+  <p>Bucket 8 also lists Marketing Brain, Governance Gate, and Ownership Registry as operational touchpoints — the same capabilities appear in Layer 4 as shared infrastructure every agent consults.</p>
+  <p><strong>The big idea:</strong> the team supervises the system instead of doing every task by hand. The Marketing Brain is the multiplier — every agent gets smarter the day it ships because they all share one source of company knowledge.</p>
+  <p><strong>What's custom vs. off-the-shelf:</strong> Only six MCPs are custom-built (Unified Data Lake, Marketing Brain, Governance Gate, Ownership Registry, AEM, Profound). Everything else is either an off-the-shelf connector or an API feeding the data lake on a schedule.</p>
+</div>
+
+<p class="footer">Web Marketing Agent Architecture — Master Diagram · Built for non-technical stakeholder conversations</p>
+
+</body>
+</html>

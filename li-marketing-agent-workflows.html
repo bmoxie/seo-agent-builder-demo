@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Web Marketing Agent Workflows — Interactive Diagram</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fa; margin: 0; padding: 32px; color: #1a1a2e; }
+  .top-nav { max-width: 1500px; margin: 0 auto 18px; background: white; border-radius: 12px; padding: 10px 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; flex-wrap: wrap; gap: 10px; }
+  .top-nav a { text-decoration: none; color: #0a2540; font-size: 14px; padding: 7px 12px; border: 1px solid #dbe3ef; border-radius: 8px; background: #f8fafc; }
+  .top-nav a:hover { border-color: #0ea5e9; color: #0369a1; }
+  h1 { text-align: center; margin-bottom: 4px; font-size: 30px; color: #0a2540; }
+  .subtitle { text-align: center; color: #4a5568; margin-bottom: 32px; font-size: 16px; line-height: 1.55; max-width: 900px; margin-left: auto; margin-right: auto; }
+  .workflow { max-width: 1500px; margin: 0 auto 48px; background: white; border-radius: 14px; padding: 28px 32px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+  .workflow h2 { margin: 0 0 4px 0; font-size: 22px; color: #0a2540; border-left: 6px solid #6366f1; padding-left: 12px; }
+  .workflow .desc { color: #64748b; font-size: 15px; margin: 8px 0 24px 18px; font-style: italic; line-height: 1.5; }
+  svg { display: block; margin: 0 auto; max-width: 100%; }
+  .node { rx: 10; ry: 10; stroke-width: 2; }
+  .node-trigger    { fill: #eef0ff; stroke: #6366f1; }
+  .node-agent      { fill: #fef3c7; stroke: #f59e0b; }
+  .node-brain      { fill: #fce7f3; stroke: #ec4899; }
+  .node-mcp        { fill: #d1fae5; stroke: #10b981; }
+  .node-data       { fill: #ede9fe; stroke: #8b5cf6; }
+  .node-source     { fill: #fee2e2; stroke: #ef4444; }
+  .node-output     { fill: #e0f2fe; stroke: #0ea5e9; }
+  .node-human      { fill: #e2e8f0; stroke: #475569; }
+  circle.prio-dot { pointer-events: none; }
+  circle.prio-dot.p1 { fill: #16a34a; stroke: rgba(0,0,0,0.15); stroke-width: 0.5; }
+  circle.prio-dot.p2 { fill: #ea580c; stroke: rgba(0,0,0,0.15); stroke-width: 0.5; }
+  circle.prio-dot.p3 { fill: #eab308; stroke: rgba(0,0,0,0.15); stroke-width: 0.5; }
+  circle.prio-dot.p4 { fill: #dc2626; stroke: rgba(0,0,0,0.15); stroke-width: 0.5; }
+  circle.prio-dot.other { fill: #94a3b8; stroke: rgba(0,0,0,0.15); stroke-width: 0.5; }
+  text { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; fill: #1a1a2e; text-anchor: middle; pointer-events: none; }
+  text.title { font-weight: 600; font-size: 14px; }
+  text.sub   { font-size: 13px; fill: #475569; }
+  .arrow { stroke: #64748b; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+  .arrow-dashed { stroke-dasharray: 5,4; }
+  .arrow-label { font-size: 12px; fill: #475569; font-style: italic; }
+  .legend { max-width: 1500px; margin: 0 auto; background: white; border-radius: 14px; padding: 24px 30px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); font-size: 15px; color: #334155; line-height: 1.55; }
+  .legend h3 { margin-top: 0; color: #0a2540; font-size: 17px; }
+  .legend p { font-size: 15px; }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .legend-swatch { width: 18px; height: 14px; border-radius: 3px; border: 2px solid; }
+  .footer { text-align: center; color: #94a3b8; font-size: 13px; margin-top: 24px; }
+  .loop-narrative { max-width: 1500px; margin: 0 auto 40px; background: white; border-radius: 14px; padding: 28px 32px 32px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border-top: 4px solid #6366f1; }
+  .loop-narrative h2 { margin: 0 0 10px; font-size: 24px; color: #0a2540; }
+  .loop-lead { color: #475569; font-size: 16px; line-height: 1.6; margin: 0 0 14px; max-width: 960px; }
+  .loop-chain { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; justify-content: center; margin: 18px 0 30px; font-size: 15px; font-weight: 600; color: #0a2540; }
+  .loop-chain .step { background: #f1f5f9; padding: 6px 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
+  .loop-chain .arr { color: #94a3b8; font-weight: 400; }
+  .loop-stage { margin-bottom: 22px; padding: 0 0 0 14px; border-left: 4px solid #cbd5e1; }
+  .loop-stage h3 { margin: 0 0 8px; font-size: 19px; color: #0a2540; }
+  .stage-tag { font-size: 15px; color: #64748b; margin: 0 0 14px; font-style: italic; line-height: 1.5; }
+  .loop-stage .subhead { font-size: 14px; font-weight: 600; color: #334155; margin: 14px 0 8px; }
+  .loop-stage ul { margin: 0 0 8px; padding-left: 20px; font-size: 14px; color: #475569; line-height: 1.48; columns: 2; column-gap: 32px; }
+  .loop-stage .meta { font-size: 15px; color: #334155; margin-top: 14px; line-height: 1.6; }
+  .substrates { background: #fdf4ff; border: 1px solid #f5d0fe; border-radius: 10px; padding: 18px 20px; margin: 26px 0 10px; }
+  .substrates h3 { margin: 0 0 12px; font-size: 17px; color: #86198f; }
+  .substrates ul { margin: 0; padding-left: 20px; font-size: 15px; color: #581c87; line-height: 1.6; }
+  .loop-bridge { font-size: 15px; color: #64748b; margin: 0 0 28px; padding-top: 18px; border-top: 1px solid #e2e8f0; line-height: 1.55; }
+  @media (max-width: 900px) { .loop-stage ul { columns: 1; } }
+</style>
+</head>
+<body>
+<nav class="top-nav" aria-label="Project navigation">
+  <a href="index.html">Home</a>
+  <a href="li-master-flow-diagram.html">Master Flow</a>
+  <a href="marketing-agent-architecture.html">Architecture</a>
+  <a href="li-marketing-agent-workflows.html">Workflows</a>
+</nav>
+
+<h1>Web Marketing Agent Workflows — How Work Actually Flows</h1>
+<p class="subtitle">Operating cycle and substrates: <a href="li-master-flow-diagram.html" style="color:#0369a1;font-weight:600">Master Flow</a>. Below: agent mapping by segment of the loop, then five example diagrams (slices from trigger to artifact).</p>
+
+<section class="loop-narrative" aria-labelledby="loop-title">
+  <h2 id="loop-title">Agents on the loop</h2>
+  <p class="loop-lead">The eight agent buckets on <a href="marketing-agent-architecture.html" style="color:#0369a1;font-weight:600">Architecture</a> describe <em>what</em> exists. Here is <em>how</em> those agents map onto the Sense→Learn loop (same loop shown on <a href="li-master-flow-diagram.html" style="color:#0369a1;font-weight:600">Master Flow</a>).</p>
+
+  <div class="loop-chain" role="presentation">
+    <span class="step">Sense</span><span class="arr">→</span>
+    <span class="step">Decide</span><span class="arr">→</span>
+    <span class="step">Produce</span><span class="arr">→</span>
+    <span class="step">Orchestrate</span><span class="arr">→</span>
+    <span class="step">Verify</span><span class="arr">→</span>
+    <span class="step">Learn</span>
+  </div>
+
+  <article class="loop-stage">
+    <h3>Sense</h3>
+    <p class="stage-tag">Continuously ingest signals from every relevant surface.</p>
+    <p class="subhead">External signals</p>
+    <ul>
+      <li>Prompt Opportunity Agent</li>
+      <li>Field News &amp; Macro Impact</li>
+      <li>AEO Defense, Competitive Watch &amp; Profound Anomalies</li>
+      <li>SERP, AI Overview &amp; Rich-Result Tracking</li>
+      <li>Persona, ICP &amp; VoC Alignment</li>
+      <li>Prompt Family Health: Answers, Drift &amp; Variance</li>
+      <li>Brand/Citation Gap &amp; Competitor Sources</li>
+      <li>Prompt Volume, Trend &amp; Sentiment</li>
+      <li>Query Migration &amp; Search Intent Shift</li>
+      <li>Striking Distance, Losses &amp; New Rank Opportunities</li>
+      <li>Algorithm Impact, Authority &amp; Branded Split</li>
+      <li>Backlink Velocity &amp; Quality</li>
+      <li>Content Gap &amp; FAQ Cannibalization</li>
+    </ul>
+    <p class="subhead">Owned-surface signals</p>
+    <ul>
+      <li>Owned Surface Change Detector</li>
+      <li>New Page Detector</li>
+      <li>Page Removal &amp; Decay Detector</li>
+      <li>Cross-Property Coverage Monitor</li>
+      <li>Template-Level Change Detector</li>
+      <li>Internal Publishing Activity Stream</li>
+      <li>Content Freshness Heatmap</li>
+      <li>GSC Coverage &amp; Indexation Agent</li>
+      <li>Content Inventory &amp; Decay</li>
+    </ul>
+    <p class="subhead">Earned signals</p>
+    <ul>
+      <li>Earned Signal Agent</li>
+      <li>Coverage &amp; Citation Monitor</li>
+      <li>Community Listening Inputs</li>
+    </ul>
+  </article>
+
+  <article class="loop-stage">
+    <h3>Decide</h3>
+    <p class="stage-tag">Rank, prioritize, and route signals into action queues.</p>
+    <ul>
+      <li>Content Gap &amp; FAQ Cannibalization</li>
+      <li>Earned Whitespace Mapper</li>
+      <li>Cross-Ecosystem Alignment</li>
+      <li>Product Expert Gut Check</li>
+      <li>Editorial Calendar Synth</li>
+      <li>Roadmap Builder</li>
+      <li>ROI by Initiative</li>
+    </ul>
+    <p class="meta">This is where the <strong>Decision Agent</strong> meta-pattern lives. Its job is “here are the things worth doing this week and why,” not “here are 500 issues.” It pulls from every Sense agent, applies business logic, and produces a ranked action queue.</p>
+  </article>
+
+  <article class="loop-stage">
+    <h3>Produce</h3>
+    <p class="stage-tag">Generate the actual work artifacts.</p>
+    <p class="subhead">Content production</p>
+    <ul>
+      <li>SEO Content Engine</li>
+      <li>Owned Surface Refresh</li>
+      <li>Repurposing Agent</li>
+      <li>Localization Engine</li>
+      <li>Agency Brief + QA</li>
+      <li>LOB Lead Review Packet</li>
+    </ul>
+    <p class="subhead">Technical production</p>
+    <ul>
+      <li>Schema Generation + Validation</li>
+      <li>Internal Linking Auto</li>
+      <li>On-Page + Decay Agent</li>
+      <li>Health Agent (Ahrefs → AEM)</li>
+      <li>404 / Redirect Janitor</li>
+      <li>Image &amp; Alt-Text Audit</li>
+      <li>Migration QA</li>
+      <li>Insight-Proof at Scale</li>
+    </ul>
+    <p class="subhead">Earned production</p>
+    <ul>
+      <li>Citation-Worthy Asset Generator</li>
+      <li>Third-Party Co-Mention Agent</li>
+      <li>Publisher Briefs</li>
+      <li>Backlink Outreach Agent</li>
+      <li>Earned Co-Creation Agent</li>
+      <li>Awards &amp; Speaking Opportunity Agent</li>
+      <li>Analyst Visibility Agent</li>
+    </ul>
+    <p class="subhead">Internal partner production</p>
+    <ul>
+      <li>Thought Leadership Engine</li>
+      <li>Newsletter Builder</li>
+      <li>AEO Guidance for Social</li>
+      <li>Exec Thought Leadership Inputs</li>
+      <li>SME Prompt Pack Generator</li>
+      <li>Webinar / Event Promotion</li>
+      <li>Airtable Handoff Packets</li>
+    </ul>
+    <p class="subhead">Reporting production</p>
+    <ul>
+      <li>Auto Reporting + Narrative</li>
+      <li>BU Stakeholder Readout</li>
+      <li>PPT / GSlides Builder</li>
+      <li>FAQ Reporting Tool</li>
+      <li>Analytics Visualization</li>
+      <li>MLT Update Builder</li>
+      <li>Multi-Source Pulls</li>
+    </ul>
+  </article>
+
+  <article class="loop-stage">
+    <h3>Orchestrate</h3>
+    <p class="stage-tag">Route the right artifact to the right owner in the right format at the right time.</p>
+    <ul>
+      <li>Ownership Registry</li>
+      <li>Agency Takeover Workflow Agent</li>
+      <li>Launch Readiness</li>
+      <li>Technical SEO Engine (as router)</li>
+      <li>Recurring Q&amp;A Agent</li>
+      <li>Doc Retrieval Agent</li>
+      <li>Song Sheet Optimizer</li>
+      <li>Meeting Prep &amp; Recap</li>
+      <li>Status Roll-Up</li>
+    </ul>
+    <p class="meta">This is where the <strong>Orchestration Agent</strong> meta-pattern lives. It enforces who-owns-what, what the approval path is, what can be auto-ticketed, and what needs review. Every Produce artifact passes through Orchestrate before reaching a human.</p>
+  </article>
+
+  <article class="loop-stage">
+    <h3>Verify</h3>
+    <p class="stage-tag">Close the loop: confirm work shipped correctly and did not break anything.</p>
+    <ul>
+      <li>Migration QA</li>
+      <li>Tech SEO Health Monitor</li>
+      <li>Conversion Path &amp; Funnel Audit</li>
+      <li>Brand &amp; Legal Compliance Sweep</li>
+      <li>GSC Coverage &amp; Indexation Agent (as verifier)</li>
+      <li>Owned Surface Change Detector (as verifier — did the change we asked for go live?)</li>
+      <li>Insight-Proof at Scale</li>
+      <li>Backlink Audit / Disavow</li>
+    </ul>
+    <p class="meta">Verify is what many SEO programs skip, which is why “recommendation theater” is a common failure mode. Every Produce artifact gets a corresponding Verify check tied to acceptance criteria.</p>
+  </article>
+
+  <article class="loop-stage">
+    <h3>Learn</h3>
+    <p class="stage-tag">Watch outcomes, update prioritization, and improve future production.</p>
+    <ul>
+      <li>Experiment Agent</li>
+      <li>Revenue Attribution &amp; Influence</li>
+      <li>Paid / Organic Sync</li>
+      <li>Tool ROI / Vendor Audit</li>
+      <li>Workflow Auditor</li>
+      <li>Decision Memory</li>
+      <li>Capacity &amp; Throughput Tracker</li>
+      <li>Onboarding &amp; SOP Agent (codifies learnings into reusable skills)</li>
+    </ul>
+    <p class="meta">Learnings flow back into the <strong>Marketing Brain</strong>, so every future Sense, Decide, and Produce cycle gets smarter without humans re-teaching the system from scratch.</p>
+  </article>
+
+  <p class="loop-bridge"><strong>Examples below:</strong> each workflow diagram is one slice through the loop (Sense → Learn). They use the same scaffold as <a href="marketing-agent-architecture.html" style="color:#0369a1;font-weight:600">Architecture</a> and <a href="li-master-flow-diagram.html" style="color:#0369a1;font-weight:600">Master Flow</a>.</p>
+</section>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
+    </marker>
+  </defs>
+</svg>
+
+<!-- ============================================================ -->
+<!-- WORKFLOW 1: Prompt Opportunity → Refresh -->
+<!-- ============================================================ -->
+<div class="workflow">
+  <h2>Workflow 1 — From AEO Visibility Drop to Published Refresh</h2>
+  <p class="desc">A nightly Profound pull detects citation loss, the Refresh Agent drafts a brief, the LOB lead approves, the agency executes, and AEM ships the update.</p>
+  <svg viewBox="0 0 1400 360" width="1400" height="360">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
+      </marker>
+    </defs>
+
+    <!-- Row 1 -->
+    <rect class="node node-source"  x="20"   y="20" width="170" height="60" />
+    <text class="title" x="105" y="44">Profound API</text>
+    <text class="sub"   x="105" y="60">Nightly citation pull</text>
+
+    <rect class="node node-data"    x="240"  y="20" width="170" height="60" />
+    <text class="title" x="325" y="44">BigQuery Data Lake</text>
+    <text class="sub"   x="325" y="60">Normalized signal store</text>
+
+    <rect class="node node-agent"   x="460"  y="20" width="190" height="60" />
+    <text class="title" x="555" y="44">AEO Citation Defense Agent</text>
+    <text class="sub"   x="555" y="60">Detects citation loss</text>
+
+    <rect class="node node-brain"   x="700"  y="20" width="170" height="60" />
+    <text class="title" x="785" y="44">Marketing Brain</text>
+    <text class="sub"   x="785" y="60">Voice, ICP, claims</text>
+
+    <rect class="node node-agent"   x="920"  y="20" width="190" height="60" />
+    <text class="title" x="1015" y="44">Owned Surface Refresh Agent</text>
+    <text class="sub"   x="1015" y="60">Drafts refresh brief</text>
+
+    <rect class="node node-output"  x="1160" y="20" width="220" height="60" />
+    <text class="title" x="1270" y="44">Refresh Brief (.docx)</text>
+    <text class="sub"   x="1270" y="60">→ SharePoint + Airtable</text>
+
+    <!-- Arrows row 1 -->
+    <path class="arrow" d="M 190 50 L 240 50" />
+    <path class="arrow" d="M 410 50 L 460 50" />
+    <path class="arrow" d="M 650 50 L 700 50" />
+    <path class="arrow" d="M 870 50 L 920 50" />
+    <path class="arrow" d="M 1110 50 L 1160 50" />
+
+    <!-- Row 2 -->
+    <rect class="node node-human"   x="20"   y="160" width="170" height="60" />
+    <text class="title" x="105" y="184">LOB Lead</text>
+    <text class="sub"   x="105" y="200">Reviews in Teams/Outlook</text>
+
+    <rect class="node node-agent"   x="240"  y="160" width="190" height="60" />
+    <text class="title" x="335" y="184">LOB Review Packet Agent</text>
+    <text class="sub"   x="335" y="200">Builds decision packet</text>
+
+    <rect class="node node-human"   x="480"  y="160" width="170" height="60" />
+    <text class="title" x="565" y="184">Content Agency</text>
+    <text class="sub"   x="565" y="200">Receives brief, drafts</text>
+
+    <rect class="node node-agent"   x="700"  y="160" width="190" height="60" />
+    <text class="title" x="795" y="184">Agency Brief & QA Agent</text>
+    <text class="sub"   x="795" y="200">QA's returned draft</text>
+
+    <rect class="node node-mcp"     x="940"  y="160" width="170" height="60" />
+    <text class="title" x="1025" y="184">AEM MCP</text>
+    <text class="sub"   x="1025" y="200">Stages page update</text>
+
+    <rect class="node node-output"  x="1160" y="160" width="220" height="60" />
+    <text class="title" x="1270" y="184">Published Refresh (AEM)</text>
+    <text class="sub"   x="1270" y="200">Live + logged in BigQuery</text>
+
+    <!-- Arrows row 2 -->
+    <path class="arrow" d="M 190 190 L 240 190" />
+    <path class="arrow" d="M 430 190 L 480 190" />
+    <path class="arrow" d="M 650 190 L 700 190" />
+    <path class="arrow" d="M 890 190 L 940 190" />
+    <path class="arrow" d="M 1110 190 L 1160 190" />
+
+    <!-- Vertical link from row 1 output to row 2 -->
+    <path class="arrow" d="M 1270 80 Q 1270 120 1270 160" />
+    <text class="arrow-label" x="1310" y="125">handoff</text>
+
+    <!-- Governance gate dashed link -->
+    <rect class="node node-brain" x="540" y="280" width="320" height="50" />
+    <text class="title" x="700" y="302">Governance Gate</text>
+    <text class="sub"   x="700" y="318">Every write checked: recommend / draft / route / execute</text>
+    <path class="arrow arrow-dashed" d="M 1025 220 Q 900 280 860 305" />
+    <path class="arrow arrow-dashed" d="M 555 80 Q 600 200 700 280" />
+  </svg>
+</div>
+
+<!-- ============================================================ -->
+<!-- WORKFLOW 2: Launch Readiness -->
+<!-- ============================================================ -->
+<div class="workflow">
+  <h2>Workflow 2 — Launch Readiness + Social Enablement Handoff</h2>
+  <p class="desc">A launch is added to the Airtable calendar. A webhook fires the Launch Readiness Agent, which runs the right checklist and returns AEO guidance plus handoff notes for the social team (not channel execution ownership).</p>
+  <svg viewBox="0 0 1400 280" width="1400" height="280">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
+      </marker>
+    </defs>
+
+    <rect class="node node-trigger" x="20"   y="20" width="170" height="60" />
+    <text class="title" x="105" y="44">Airtable Calendar</text>
+    <text class="sub"   x="105" y="60">New launch added</text>
+
+    <rect class="node node-mcp"     x="240"  y="20" width="170" height="60" />
+    <text class="title" x="325" y="44">Airtable MCP</text>
+    <text class="sub"   x="325" y="60">Webhook fires</text>
+
+    <rect class="node node-agent"   x="460"  y="20" width="200" height="60" />
+    <circle class="prio-dot other" cx="472" cy="32" r="5" />
+    <text class="title" x="560" y="44">Launch Readiness Agent</text>
+    <text class="sub"   x="560" y="60">Picks asset-type checklist</text>
+
+    <rect class="node node-mcp"     x="710"  y="20" width="170" height="60" />
+    <text class="title" x="795" y="44">AEM MCP</text>
+    <text class="sub"   x="795" y="60">Reads draft state</text>
+
+    <rect class="node node-source"  x="930"  y="20" width="170" height="60" />
+    <text class="title" x="1015" y="44">Adobe Launch API</text>
+    <text class="sub"   x="1015" y="60">Validates tags</text>
+
+    <rect class="node node-output"  x="1190" y="20" width="190" height="60" />
+    <text class="title" x="1285" y="44">Defect Report</text>
+    <text class="sub"   x="1285" y="60">Severity-ranked</text>
+
+    <path class="arrow" d="M 190 50 L 240 50" />
+    <path class="arrow" d="M 410 50 L 460 50" />
+    <path class="arrow" d="M 660 50 L 710 50" />
+    <path class="arrow" d="M 880 50 L 930 50" />
+    <path class="arrow" d="M 1100 50 L 1190 50" />
+
+    <rect class="node node-output"  x="240"  y="160" width="200" height="60" />
+    <text class="title" x="340" y="184">Approval Packet (Outlook)</text>
+    <text class="sub"   x="340" y="200">To LOB lead + BU stakeholder</text>
+
+    <rect class="node node-human"   x="500"  y="160" width="170" height="60" />
+    <text class="title" x="585" y="184">LOB Lead</text>
+    <text class="sub"   x="585" y="200">Approves or sends back</text>
+
+    <rect class="node node-agent"   x="730"  y="160" width="190" height="60" />
+    <text class="title" x="825" y="184">Governance Gate</text>
+    <text class="sub"   x="825" y="200">Logs decision</text>
+
+    <rect class="node node-output"  x="980"  y="160" width="200" height="60" />
+    <text class="title" x="1080" y="184">Go/No-Go + Social Guidance</text>
+    <text class="sub"   x="1080" y="200">Back to Airtable + Teams</text>
+
+    <path class="arrow" d="M 1285 80 Q 1285 120 340 160" />
+    <path class="arrow" d="M 440 190 L 500 190" />
+    <path class="arrow" d="M 670 190 L 730 190" />
+    <path class="arrow" d="M 920 190 L 980 190" />
+  </svg>
+</div>
+
+<!-- ============================================================ -->
+<!-- WORKFLOW 3: Reporting Narrator -->
+<!-- ============================================================ -->
+<div class="workflow">
+  <h2>Workflow 3 — Weekly BU Readout + Deck Builder</h2>
+  <p class="desc">A scheduled job pulls fresh metrics from every source, the reporting and narrative agents synthesize the BU story, and a readout plus deck land in Outlook Monday morning.</p>
+  <svg viewBox="0 0 1400 300" width="1400" height="300">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
+      </marker>
+    </defs>
+
+    <rect class="node node-trigger" x="20"  y="20" width="170" height="60" />
+    <text class="title" x="105" y="44">Azure Function</text>
+    <text class="sub"   x="105" y="60">Sunday 6pm cron</text>
+
+    <rect class="node node-source" x="20"  y="100" width="170" height="50" />
+    <text class="title" x="105" y="120">Adobe Analytics</text>
+    <rect class="node node-source" x="20"  y="160" width="170" height="50" />
+    <text class="title" x="105" y="180">GSC + Ahrefs + SEMrush</text>
+    <rect class="node node-source" x="20"  y="220" width="170" height="50" />
+    <text class="title" x="105" y="240">Profound</text>
+
+    <rect class="node node-data"    x="240" y="120" width="170" height="100" />
+    <text class="title" x="325" y="160">BigQuery</text>
+    <text class="sub"   x="325" y="178">Unified data lake</text>
+
+    <rect class="node node-agent"   x="460" y="120" width="200" height="100" />
+    <circle class="prio-dot p1" cx="472" cy="132" r="5" />
+    <text class="title" x="560" y="160">Reporting Narrator</text>
+    <text class="sub"   x="560" y="178">Synthesizes the story</text>
+
+    <rect class="node node-brain"   x="710" y="20" width="170" height="60" />
+    <text class="title" x="795" y="44">Marketing Brain</text>
+    <text class="sub"   x="795" y="60">Brand voice, context</text>
+
+    <rect class="node node-mcp"     x="710" y="120" width="170" height="50" />
+    <text class="title" x="795" y="148">Airtable MCP</text>
+    <rect class="node node-mcp"     x="710" y="180" width="170" height="50" />
+    <text class="title" x="795" y="208">Jira MCP (shipped work)</text>
+
+    <rect class="node node-output"  x="930" y="120" width="200" height="50" />
+    <text class="title" x="1030" y="148">BU Readout (.docx)</text>
+    <rect class="node node-output"  x="930" y="180" width="200" height="50" />
+    <circle class="prio-dot p1" cx="942" cy="192" r="5" />
+    <text class="title" x="1030" y="208">Deck Builder Output</text>
+
+    <rect class="node node-human"   x="1180" y="120" width="200" height="110" />
+    <text class="title" x="1280" y="160">BU Stakeholders</text>
+    <text class="sub"   x="1280" y="178">Receive in Outlook</text>
+    <text class="sub"   x="1280" y="194">+ Teams channel</text>
+
+    <path class="arrow" d="M 105 80 L 105 100" />
+    <path class="arrow" d="M 190 125 L 240 145" />
+    <path class="arrow" d="M 190 185 L 240 170" />
+    <path class="arrow" d="M 190 245 L 240 195" />
+    <path class="arrow" d="M 410 170 L 460 170" />
+    <path class="arrow" d="M 660 160 L 710 145" />
+    <path class="arrow" d="M 660 180 L 710 205" />
+    <path class="arrow" d="M 795 80 Q 795 100 660 140" />
+    <path class="arrow" d="M 880 145 L 930 145" />
+    <path class="arrow" d="M 880 205 L 930 205" />
+    <path class="arrow" d="M 1130 175 L 1180 175" />
+  </svg>
+</div>
+
+<!-- ============================================================ -->
+<!-- WORKFLOW 4: Earned Media Outreach -->
+<!-- ============================================================ -->
+<div class="workflow">
+  <h2>Workflow 4 — Earned Media Pitch & Outreach</h2>
+  <p class="desc">A new product announcement triggers a press release, pitch angles, target journalist list, and personalized outreach drafts ready for the team to send.</p>
+  <svg viewBox="0 0 1400 280" width="1400" height="280">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
+      </marker>
+    </defs>
+
+    <rect class="node node-human"   x="20"  y="20" width="170" height="60" />
+    <text class="title" x="105" y="44">Marketing Lead</text>
+    <text class="sub"   x="105" y="60">Logs news in Teams</text>
+
+    <rect class="node node-agent"   x="240" y="20" width="200" height="60" />
+    <text class="title" x="340" y="44">Press Release Agent</text>
+    <text class="sub"   x="340" y="60">Drafts release + angles</text>
+
+    <rect class="node node-brain"   x="490" y="20" width="170" height="60" />
+    <text class="title" x="575" y="44">Marketing Brain</text>
+    <text class="sub"   x="575" y="60">Approved claims</text>
+
+    <rect class="node node-source"  x="710" y="20" width="170" height="60" />
+    <text class="title" x="795" y="44">Meltwater API</text>
+    <text class="sub"   x="795" y="60">Journalist intel</text>
+
+    <rect class="node node-agent"   x="930" y="20" width="220" height="60" />
+    <text class="title" x="1040" y="44">Journalist Tracker Agent</text>
+    <text class="sub"   x="1040" y="60">Builds tiered target list</text>
+
+    <rect class="node node-output"  x="1200" y="20" width="180" height="60" />
+    <text class="title" x="1290" y="44">Tier 1/2/3 List</text>
+    <text class="sub"   x="1290" y="60">SharePoint</text>
+
+    <path class="arrow" d="M 190 50 L 240 50" />
+    <path class="arrow" d="M 440 50 L 490 50" />
+    <path class="arrow" d="M 660 50 L 710 50" />
+    <path class="arrow" d="M 880 50 L 930 50" />
+    <path class="arrow" d="M 1150 50 L 1200 50" />
+
+    <rect class="node node-mcp"     x="240" y="160" width="200" height="60" />
+    <text class="title" x="340" y="184">Outlook MCP</text>
+    <text class="sub"   x="340" y="200">Drafts personalized emails</text>
+
+    <rect class="node node-brain"   x="490" y="160" width="170" height="60" />
+    <text class="title" x="575" y="184">Governance Gate</text>
+    <text class="sub"   x="575" y="200">Drafts only, no auto-send</text>
+
+    <rect class="node node-human"   x="710" y="160" width="170" height="60" />
+    <text class="title" x="795" y="184">PR Manager</text>
+    <text class="sub"   x="795" y="200">Reviews + sends</text>
+
+    <rect class="node node-data"    x="930" y="160" width="220" height="60" />
+    <text class="title" x="1040" y="184">Outreach Log → BigQuery</text>
+    <text class="sub"   x="1040" y="200">Feeds Coverage Monitor</text>
+
+    <path class="arrow" d="M 1290 80 Q 1290 120 340 160" />
+    <path class="arrow" d="M 440 190 L 490 190" />
+    <path class="arrow" d="M 660 190 L 710 190" />
+    <path class="arrow" d="M 880 190 L 930 190" />
+  </svg>
+</div>
+
+<!-- ============================================================ -->
+<!-- WORKFLOW 5: Ad-Hoc Question -->
+<!-- ============================================================ -->
+<div class="workflow">
+  <h2>Workflow 5 — Recurring Stakeholder Q&A in Teams</h2>
+  <p class="desc">A stakeholder asks a question in Teams. The recurring Q&A agent pulls from the Brain and data lake, governance checks the answer, and a sourced reply lands back in chat.</p>
+  <svg viewBox="0 0 1400 220" width="1400" height="220">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
+      </marker>
+    </defs>
+
+    <rect class="node node-human"   x="20"   y="20" width="170" height="60" />
+    <text class="title" x="105" y="44">BU Stakeholder</text>
+    <text class="sub"   x="105" y="60">Asks in Teams</text>
+
+    <rect class="node node-mcp"     x="240"  y="20" width="170" height="60" />
+    <text class="title" x="325" y="44">Teams MCP</text>
+    <text class="sub"   x="325" y="60">Routes to Claude</text>
+
+    <rect class="node node-agent"   x="460"  y="20" width="200" height="60" />
+    <circle class="prio-dot p1" cx="472" cy="32" r="5" />
+    <text class="title" x="560" y="44">Recurring Q&A Agent</text>
+    <text class="sub"   x="560" y="60">Picks the right agent</text>
+
+    <rect class="node node-brain"   x="710"  y="20" width="170" height="60" />
+    <text class="title" x="795" y="44">Marketing Brain</text>
+    <text class="sub"   x="795" y="60">Semantic search</text>
+
+    <rect class="node node-data"    x="930"  y="20" width="170" height="60" />
+    <text class="title" x="1015" y="44">Data Lake MCP</text>
+    <text class="sub"   x="1015" y="60">BigQuery query</text>
+
+    <rect class="node node-brain"   x="1150" y="20" width="180" height="60" />
+    <text class="title" x="1240" y="44">Governance Gate</text>
+    <text class="sub"   x="1240" y="60">Compliance check</text>
+
+    <rect class="node node-output"  x="240"  y="130" width="200" height="60" />
+    <text class="title" x="340" y="154">Sourced Answer</text>
+    <text class="sub"   x="340" y="170">With citations</text>
+
+    <rect class="node node-human"   x="500"  y="130" width="170" height="60" />
+    <text class="title" x="585" y="154">BU Stakeholder</text>
+    <text class="sub"   x="585" y="170">Reads in Teams</text>
+
+    <rect class="node node-data"    x="730"  y="130" width="200" height="60" />
+    <text class="title" x="830" y="154">Decision Log</text>
+    <text class="sub"   x="830" y="170">Q&A archived</text>
+
+    <path class="arrow" d="M 190 50 L 240 50" />
+    <path class="arrow" d="M 410 50 L 460 50" />
+    <path class="arrow" d="M 660 50 L 710 50" />
+    <path class="arrow" d="M 880 50 L 930 50" />
+    <path class="arrow" d="M 1100 50 L 1150 50" />
+    <path class="arrow" d="M 1240 80 Q 1240 110 340 130" />
+    <path class="arrow" d="M 440 160 L 500 160" />
+    <path class="arrow" d="M 670 160 L 730 160" />
+  </svg>
+</div>
+
+<div class="legend">
+  <h3>Legend</h3>
+  <div class="legend-items">
+    <div class="legend-item"><div class="legend-swatch" style="background:#e2e8f0;border-color:#475569"></div>Human / Team Member</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#eef0ff;border-color:#6366f1"></div>Trigger / Schedule</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#fef3c7;border-color:#f59e0b"></div>Agent (Claude Code)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#fce7f3;border-color:#ec4899"></div>Brain / Governance</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#d1fae5;border-color:#10b981"></div>MCP Connector</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ede9fe;border-color:#8b5cf6"></div>Data Layer</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#fee2e2;border-color:#ef4444"></div>External API</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e0f2fe;border-color:#0ea5e9"></div>Output / Artifact</div>
+  </div>
+  <p style="margin-top:16px"><strong>How to read these:</strong> each diagram shows one realistic example of how a request enters the system, gets processed by an agent, consults the Brain, calls the right MCPs and data sources, and produces an artifact that lands in Teams, Outlook, SharePoint, Airtable, or AEM. Solid arrows show the main flow. Dashed arrows show governance checks happening alongside.</p>
+  <p><strong>Priority dots</strong> on selected steps: green=P1 · orange=P2 · yellow=P3 · red=P4 · slate=other.</p>
+  <p><strong>The point:</strong> the team isn't doing every task by hand anymore — they're supervising five (or fifty) flows like these, intervening only on exceptions and high-stakes approvals.</p>
+</div>
+
+<p class="footer">Web Marketing Agent Workflows · Built for non-technical stakeholder conversations</p>
+
+</body>
+</html>
